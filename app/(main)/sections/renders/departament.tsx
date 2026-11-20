@@ -16,11 +16,9 @@ const departments : departmentsType[] = [
     {
         name: 'Human Resources',
         description: [
-            'Organization',
+            'Planning',
             'Recruitment',
             'Evaluation',
-            'Conflict resolution',
-            'Department orientation'
 
 
         ]
@@ -28,39 +26,37 @@ const departments : departmentsType[] = [
     {
         name: 'Information Technology',
         description: [
-            'Web development',
-            'Database management',
-            'Research and developement',
-            'Email marketing'
+            'Development',
+            'Database',
+            'Research and creation',
+
 
         ]
     },
       {
         name: 'External Relations',
         description: [
-            'Contacting trainers / hosts',
-            'Contacting sponsors',
-            'Opportunities scouting',
-            'Commercial service'
+            'Sponsorship and Partnership',
+            'Career development and opportunities',
+            'company visits and explorations',
 
         ]
     },
     {
         name: 'Internal Activities',
         description: [
-            'Club-bounding activities',
-            'Recruitments',
-            'Internship facilitation for partners',
+            'Edufan',
+            'Organize art',
+            'Trail and joy',
 
         ]
     },
     {
         name: 'Secretariat Department',
         description: [
-            'making minutes',
-            'creating reports',
-            'Administrative representaion',
-            'Electronic journal'
+            'PV',
+            'Research & Development',
+            'Demands'
 
         ]
     },
@@ -68,10 +64,10 @@ const departments : departmentsType[] = [
     {
         name: 'Marketing Department',
         description: [
-            'Maintaining the club\'s image',
-            'Promoting club’s services',
-            'Promoting events ',
-            'Design service'
+            'Production',
+            'Designers',
+            'Research and development',
+            'Social media managers'
         ]
     },
 
