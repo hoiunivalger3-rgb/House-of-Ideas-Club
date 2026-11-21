@@ -21,7 +21,7 @@ export default function Footer() {
                                 </li>
 
                                 <li>
-                                    <span >hoi.univalger3@gmail.com</span>
+                                    <span >hoi.univalger3@houseofideas.club</span>
                                 </li>
                             </ul>
                         </div>
@@ -32,12 +32,7 @@ export default function Footer() {
 
                                 className="text-gray-500 text-xs dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    <a href="https://wa.me/+213796664383" className="hover:underline z-20">+213 796 66
-                                        43 83</a>
-                                </li>
-                                <li>
-                                    <a href="https://wa.me/+213552553324" className="hover:underline">+213 552 55 33
-                                        24</a>
+                                    <a href="https://wa.me/+213796664383" className="hover:underline z-20">+213 660 54 98 73</a>
                                 </li>
                             </ul>
                         </div>
