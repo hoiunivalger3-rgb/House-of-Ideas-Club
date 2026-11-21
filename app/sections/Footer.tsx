@@ -51,7 +51,7 @@ export default function Footer() {
                     <div className="flex  justify-center mt-0">
 
 
-                        <a href="https://www.instagram.com/hi.club.alger3/"
+                        <a href="https://www.instagram.com/club_houseofideas/"
                            className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
                             <Instagram/>
                             <span className="sr-only">Instagram page</span>

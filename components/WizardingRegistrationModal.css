@@ -1,0 +1,823 @@
+    @font-face {
+      font-family: 'Runethia';
+      src: local('Runethia'),
+           local('Runethia Regular'),
+           url('./Runethia.woff2') format('woff2'),
+           url('./Runethia.woff') format('woff'),
+           url('./Runethia.ttf') format('truetype'),
+           url('Runethia.ttf') format('truetype'),
+           url('fonts/Runethia.woff2') format('woff2'),
+           url('fonts/Runethia.woff') format('woff'),
+           url('fonts/Runethia.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-display: block;
+      font-family: Roboto;
+      src: url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2"),
+           url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/25c678feafdc175a70922a116c9be3e7.woff) format("woff");
+    }
+
+    @font-face {
+      font-display: fallback;
+      font-family: Roboto;
+      font-weight: 600;
+      src: url(https://assets.brevo.com/font/Roboto/Latin/medium/normal/6e9caeeafb1f3491be3e32744bc30440.woff2) format("woff2"),
+           url(https://assets.brevo.com/font/Roboto/Latin/medium/normal/71501f0d8d5aa95960f6475d5487d4c2.woff) format("woff");
+    }
+
+    @font-face {
+      font-display: fallback;
+      font-family: Roboto;
+      font-weight: 700;
+      src: url(https://assets.brevo.com/font/Roboto/Latin/bold/normal/3ef7cf158f310cf752d5ad08cd0e7e60.woff2) format("woff2"),
+           url(https://assets.brevo.com/font/Roboto/Latin/bold/normal/ece3a1d82f18b60bcce0211725c476aa.woff) format("woff");
+    }
+
+    /* ==========================================================================
+       2. DESIGN TOKENS & AMBIENT STUDY BACKDROP
+       ========================================================================== */
+    :root {
+      --font-runethia: 'Runethia', 'Cinzel Decorative', 'Cinzel', 'IM Fell English', Georgia, serif;
+      --font-runethia-body: 'Runethia', 'Cinzel', 'IM Fell English', Georgia, serif;
+      --ink-dark: #231308;
+      --ink-medium: #3b2313;
+      --ink-subtle: #664429;
+      --wax-crimson: #721815;
+      --wax-deep: #440b09;
+      --parchment-base: #ead8b3;
+      --parchment-light: #f5ead2;
+      --parchment-edge: #9e794c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: #16100b !important;
+      background-image:
+        radial-gradient(ellipse at 50% 25%, #2c2016 0%, #140e09 65%, #0a0704 100%) !important;
+      color: var(--ink-dark);
+      font-family: var(--font-runethia-body) !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Envelope Trigger Section (Move this into your desired section on the page) */
+    .envelope-section {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+    }
+
+    .wax-envelope-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 350px;
+      width: 100%;
+      line-height: 0;
+    }
+
+    .wax-envelope-wrapper img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.65);
+    }
+
+    /* Clickable Hotspot Aligned Over the Red Wax Seal */
+    .wax-seal-trigger {
+      position: absolute;
+      left: 50%;
+      top: 63%;
+      transform: translate(-50%, -50%);
+      width: 17%;
+      aspect-ratio: 1 / 1;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 210, 110, 0.25) 0%, rgba(180, 30, 25, 0) 72%);
+      cursor: pointer;
+      z-index: 5;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .wax-seal-trigger:hover,
+    .wax-seal-trigger:focus-visible {
+      transform: translate(-50%, -50%) scale(1.08);
+      background: radial-gradient(circle, rgba(255, 224, 130, 0.45) 0%, rgba(180, 30, 25, 0.08) 75%);
+      box-shadow: 0 0 18px rgba(229, 190, 70, 0.65);
+      outline: none;
+    }
+
+    /* Scrollable Popup Backdrop (Smooth Fade + Keeps Underlying Website Visible) */
+    .scroll-popup-backdrop {
+      display: block;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: rgba(12, 8, 5, 0.68);
+      backdrop-filter: blur(3px);
+      padding: 28px 12px 48px 12px;
+      transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  visibility 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .scroll-popup-backdrop.is-open {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Smooth Unroll / Rise Animation on the Parchment Scroll */
+    .scroll-popup-backdrop .scroll-assembly {
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transform-origin: top center;
+      transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.06s,
+                  transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
+    }
+
+    .scroll-popup-backdrop.is-open .scroll-assembly {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-popup-backdrop,
+      .scroll-popup-backdrop .scroll-assembly {
+        transition: none !important;
+        transform: none !important;
+      }
+    }
+
+    .scroll-popup-close {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 10001;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid #e5be46;
+      background: #721815;
+      color: #f5ead2;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .scroll-popup-close:hover {
+      transform: scale(1.08);
+      background: #8a201c;
+    }
+
+    /* Outer Brevo Wrapper Inside Popup */
+    .sib-form {
+      background-color: transparent !important;
+      padding: 20px 14px 48px 14px !important;
+      min-height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .sib-form-container {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================================================
+       3. SELF-CONTAINED REALISTIC ROLLED PARCHMENT SCROLL (ZERO BROKEN IMAGES)
+       ========================================================================== */
+    .scroll-assembly {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      filter: drop-shadow(0 26px 48px rgba(0, 0, 0, 0.88));
+    }
+
+    /* 3D Cylindrical Rolled Parchment Curls (Top & Bottom) */
+    .scroll-cylinder {
+      position: relative;
+      z-index: 6;
+      width: 100%;
+      height: 56px;
+      border-radius: 12px / 28px;
+      background-color: #d8be92;
+      background-image:
+        linear-gradient(
+          180deg,
+          #472f18 0%,
+          #8b6a42 9%,
+          #dfc69c 22%,
+          #f6e9ce 33%,
+          #e3cba1 48%,
+          #b89464 70%,
+          #664626 88%,
+          #241408 100%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(75, 48, 22, 0.04) 0px,
+          rgba(75, 48, 22, 0.04) 2px,
+          transparent 2px,
+          transparent 7px
+        );
+      box-shadow:
+        inset 20px 0 28px rgba(34, 19, 8, 0.72),
+        inset -20px 0 28px rgba(34, 19, 8, 0.72),
+        0 12px 22px rgba(15, 8, 3, 0.75);
+      filter: url(#parchment-edge-displacement);
+    }
+
+    /* Spiral Rolled Paper Ends on Left & Right of Cylinders */
+    .scroll-cylinder::before,
+    .scroll-cylinder::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      width: 24px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          ellipse at center,
+          #1e1107 0%,
+          #1e1107 24%,
+          #c9ad80 28%,
+          #4a3018 38%,
+          #dfc79e 48%,
+          #5c3d20 58%,
+          #eddab6 68%,
+          #755230 82%,
+          #2c190b 100%
+        );
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.85);
+    }
+
+    .scroll-cylinder::before {
+      left: 3px;
+    }
+
+    .scroll-cylinder::after {
+      right: 3px;
+    }
+
+    .scroll-cylinder--top {
+      margin-bottom: -16px;
+    }
+
+    .scroll-cylinder--bottom {
+      margin-top: -16px;
+      background-image:
+        linear-gradient(
+          180deg,
+          #291709 0%,
+          #755431 12%,
+          #cbb084 28%,
+          #f3e4c6 46%,
+          #d7bc8f 66%,
+          #926f45 84%,
+          #3c2511 100%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(75, 48, 22, 0.04) 0px,
+          rgba(75, 48, 22, 0.04) 2px,
+          transparent 2px,
+          transparent 7px
+        );
+    }
+
+    /* Main Parchment Sheet (#sib-container) — Always Warm Cream/Sepia */
+    #sib-container {
+      position: relative;
+      z-index: 2;
+      width: 93% !important;
+      max-width: 632px !important;
+      margin: 0 auto !important;
+      padding: 58px 54px 62px 54px !important;
+      border: none !important;
+      border-radius: 2px !important;
+      background-color: var(--parchment-base) !important;
+      background-image:
+        linear-gradient(180deg, rgba(34, 19, 8, 0.58) 0%, rgba(34, 19, 8, 0.14) 5%, transparent 11%),
+        linear-gradient(0deg, rgba(34, 19, 8, 0.55) 0%, rgba(34, 19, 8, 0.12) 5%, transparent 11%),
+        radial-gradient(ellipse at 50% 50%, rgba(248, 238, 216, 0.55) 38%, rgba(214, 185, 138, 0.65) 78%, rgba(128, 91, 51, 0.85) 100%),
+        radial-gradient(circle at 18% 22%, rgba(166, 125, 76, 0.22) 0%, transparent 38%),
+        radial-gradient(circle at 82% 68%, rgba(154, 112, 65, 0.24) 0%, transparent 42%),
+        radial-gradient(circle at 28% 84%, rgba(175, 134, 82, 0.2) 0%, transparent 35%),
+        url('Gemini_Generated_Image_li92rgli92rgli92.jfif') !important;
+      background-size: 100% 100% !important;
+      background-repeat: no-repeat !important;
+      box-shadow:
+        inset 18px 0 32px rgba(96, 65, 34, 0.45),
+        inset -18px 0 32px rgba(96, 65, 34, 0.45),
+        inset 0 0 0 1px rgba(92, 61, 30, 0.35) !important;
+    }
+
+    /* Organic Deckled & Torn Left/Right Parchment Edges via SVG Turbulence */
+    #sib-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(84, 54, 26, 0.48) 0%, transparent 3.5%, transparent 96.5%, rgba(84, 54, 26, 0.48) 100%);
+      filter: url(#parchment-edge-displacement);
+    }
+
+    /* Subtle Fine Paper Fiber Grain Overlay */
+    #sib-container::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.28;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.55'/%3E%3C/svg%3E");
+    }
+
+    #sib-form {
+      position: relative;
+      z-index: 3;
+    }
+
+    /* ==========================================================================
+       4. RUNETHIA IRON-GALL INK TYPOGRAPHY
+       ========================================================================== */
+    .wizarding-title,
+    .wizarding-title p {
+      font-family: var(--font-runethia) !important;
+      font-size: clamp(28px, 4.8vw, 42px) !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.05em !important;
+      text-align: center !important;
+      color: var(--ink-dark) !important;
+      margin: 0 !important;
+      line-height: 1.25 !important;
+      text-shadow: 0 1px 0 rgba(255, 248, 232, 0.65);
+    }
+
+    .wizarding-subtitle,
+    .wizarding-subtitle p {
+      font-family: var(--font-runethia-body) !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.03em !important;
+      text-align: center !important;
+      color: var(--ink-medium) !important;
+      margin: 8px 0 0 0 !important;
+      line-height: 1.45 !important;
+    }
+
+    .ink-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 18px auto 22px auto;
+      width: 82%;
+      color: var(--ink-medium);
+    }
+
+    .ink-divider::before,
+    .ink-divider::after {
+      content: "";
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, rgba(59, 35, 19, 0.65), transparent);
+    }
+
+    .ink-divider span {
+      font-family: var(--font-runethia) !important;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      color: var(--wax-crimson);
+    }
+
+    #sib-container .entry__label {
+      font-family: var(--font-runethia) !important;
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.03em !important;
+      color: var(--ink-medium) !important;
+      margin-bottom: 6px !important;
+      display: block !important;
+      background: transparent !important;
+      text-align: left !important;
+    }
+
+    #sib-container .entry__label[data-required="*"]::after {
+      content: " *";
+      color: var(--wax-crimson) !important;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       5. TRANSPARENT INK-RULED INPUTS & COUNTRY CODE SELECT
+       ========================================================================== */
+    #sib-container .entry__field,
+    #sib-container .sib-sms-input {
+      background: transparent !important;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    #sib-container input.input,
+    #sib-container select.input,
+    #sib-container textarea.input,
+    .sib-form .input {
+      font-family: var(--font-runethia-body) !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      color: var(--ink-dark) !important;
+      background: rgba(59, 35, 19, 0.04) !important;
+      background-color: rgba(59, 35, 19, 0.04) !important;
+      border: none !important;
+      border-bottom: 1.5px solid var(--ink-medium) !important;
+      border-radius: 0 !important;
+      padding: 8px 6px !important;
+      height: auto !important;
+      min-height: 40px;
+      width: 100%;
+      box-shadow: none !important;
+      -webkit-appearance: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease !important;
+    }
+
+    #sib-container input.input::placeholder,
+    #sib-container textarea.input::placeholder {
+      font-family: var(--font-runethia-body) !important;
+      color: var(--ink-subtle) !important;
+      opacity: 0.82;
+    }
+
+    #sib-container input.input:-ms-input-placeholder {
+      font-family: var(--font-runethia-body) !important;
+      color: var(--ink-subtle) !important;
+    }
+
+    #sib-container input.input:hover,
+    #sib-container select.input:hover {
+      border-bottom-color: var(--ink-dark) !important;
+      background-color: rgba(59, 35, 19, 0.08) !important;
+    }
+
+    #sib-container input.input:focus,
+    #sib-container select.input:focus {
+      outline: none !important;
+      background-color: rgba(59, 35, 19, 0.11) !important;
+      border-bottom: 2px solid var(--wax-crimson) !important;
+      box-shadow: none !important;
+    }
+
+    #sib-container select.input option {
+      font-family: var(--font-runethia-body) !important;
+      background-color: #ead8b3;
+      color: var(--ink-dark);
+    }
+
+    #sib-container .sib-sms-input {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    #sib-container .sib-sms-input .entry__field:first-child {
+      flex: 0 0 116px;
+      max-width: 116px;
+    }
+
+    #sib-container .sib-sms-input select.input {
+      padding: 8px 18px 8px 4px !important;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%233b2313' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 4px center !important;
+    }
+
+    #sib-container .sib-sms-tooltip__icon {
+      background-color: var(--ink-medium) !important;
+      color: var(--parchment-light) !important;
+      font-family: var(--font-runethia) !important;
+      font-size: 11px !important;
+      border: 1px solid var(--ink-dark) !important;
+    }
+
+    #sib-container .sib-sms-tooltip__box {
+      background-color: var(--ink-dark) !important;
+      color: var(--parchment-light) !important;
+      font-family: var(--font-runethia-body) !important;
+      font-size: 13px !important;
+      border: 1px solid #6b4627 !important;
+      border-radius: 3px !important;
+    }
+
+    /* ==========================================================================
+       6. HARRY POTTER / WIZARDING WORLD CUSTOM RADIO BUTTONS
+       ========================================================================== */
+    #sib-container .sib-radiobutton-group .entry__choice {
+      margin: 8px 0 !important;
+      padding: 0 !important;
+      text-indent: 0 !important;
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label {
+      position: relative !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 13px !important;
+      cursor: pointer !important;
+      padding: 8px 14px 8px 10px !important;
+      margin: 0 !important;
+      text-indent: 0 !important;
+      border-radius: 6px !important;
+      border: 1px solid rgba(122, 82, 40, 0.28) !important;
+      background: rgba(247, 237, 216, 0.36) !important;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1) !important;
+      width: 100%;
+      user-select: none;
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label:hover {
+      background: rgba(252, 244, 224, 0.68) !important;
+      border-color: rgba(168, 121, 46, 0.65) !important;
+      box-shadow: 0 2px 10px rgba(184, 134, 45, 0.18) !important;
+      transform: translateX(3px);
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label:has(input.input_replaced:checked) {
+      background: linear-gradient(90deg, rgba(122, 20, 25, 0.11) 0%, rgba(212, 175, 55, 0.16) 100%) !important;
+      border-color: #8c5a24 !important;
+      box-shadow:
+        0 2px 12px rgba(184, 134, 45, 0.24),
+        inset 0 0 0 1px rgba(212, 175, 55, 0.35) !important;
+    }
+
+    #sib-container input.input_replaced[type="radio"] {
+      position: absolute !important;
+      opacity: 0 !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+
+    #sib-container span.radio-button {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 22px !important;
+      height: 22px !important;
+      min-width: 22px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-radius: 4px !important;
+      transform: rotate(45deg) !important;
+      background: radial-gradient(circle at 35% 35%, #f5e7ca, #cbb082) !important;
+      border: 1.5px solid #6e471b !important;
+      box-shadow:
+        0 1px 3px rgba(43, 24, 10, 0.35),
+        inset 0 0 4px rgba(72, 42, 14, 0.35) !important;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+    #sib-container span.radio-button::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: 3px !important;
+      border: 1px solid rgba(110, 71, 27, 0.45) !important;
+      border-radius: 2px !important;
+      transition: all 0.25s ease !important;
+    }
+
+    #sib-container span.radio-button::after {
+      content: "" !important;
+      position: static !important;
+      display: block !important;
+      width: 8px !important;
+      height: 8px !important;
+      margin: 0 !important;
+      border-radius: 50% !important;
+      background: transparent !important;
+      transform: scale(0) !important;
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label:hover span.radio-button {
+      border-color: #b8862d !important;
+      box-shadow:
+        0 0 10px rgba(212, 175, 55, 0.55),
+        inset 0 0 4px rgba(212, 175, 55, 0.4) !important;
+    }
+
+    #sib-container input.input_replaced[type="radio"]:checked + span.radio-button {
+      background: radial-gradient(circle at 35% 35%, #a81c24 0%, #660d12 85%) !important;
+      border-color: #e5be46 !important;
+      transform: rotate(225deg) scale(1.06) !important;
+      box-shadow:
+        0 0 12px rgba(212, 175, 55, 0.8),
+        0 0 20px rgba(166, 28, 34, 0.45),
+        inset 0 0 4px rgba(255, 224, 130, 0.6) !important;
+    }
+
+    #sib-container input.input_replaced[type="radio"]:checked + span.radio-button::before {
+      border-color: rgba(245, 211, 108, 0.75) !important;
+    }
+
+    #sib-container input.input_replaced[type="radio"]:checked + span.radio-button::after {
+      background: radial-gradient(circle, #fff3b0 0%, #d4af37 70%, #9c721c 100%) !important;
+      box-shadow: 0 0 6px #ffe082 !important;
+      transform: scale(1) !important;
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label span:last-child {
+      position: static !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-family: var(--font-runethia-body) !important;
+      font-size: 15.5px !important;
+      font-weight: 600 !important;
+      line-height: 1.35 !important;
+      color: var(--ink-dark) !important;
+      background: transparent !important;
+      letter-spacing: 0.02em !important;
+      transition: color 0.2s ease !important;
+    }
+
+    #sib-container .sib-radiobutton-group .entry__choice label:has(input.input_replaced:checked) span:last-child {
+      color: #4d0c10 !important;
+      font-weight: 700 !important;
+    }
+
+    /* ==========================================================================
+       7. CRIMSON WAX SEAL RIBBON SUBMIT BUTTON
+       ========================================================================== */
+    .submit-button-wrapper {
+      text-align: center !important;
+      margin-top: 8px;
+    }
+
+    #sib-container .sib-form-block__button {
+      position: relative;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px;
+      font-family: var(--font-runethia) !important;
+      font-size: 17px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+      color: var(--parchment-light) !important;
+      background: linear-gradient(180deg, #8a201c 0%, #721815 52%, #520f0d 100%) !important;
+      border: 1.5px solid #3c0a08 !important;
+      border-radius: 3px !important;
+      padding: 13px 38px !important;
+      cursor: pointer !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 224, 210, 0.28),
+        inset 0 0 0 3px rgba(234, 216, 179, 0.16),
+        0 6px 16px rgba(35, 19, 8, 0.45) !important;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+    }
+
+    #sib-container .sib-form-block__button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 224, 210, 0.35),
+        inset 0 0 0 3px rgba(234, 216, 179, 0.24),
+        0 9px 20px rgba(35, 19, 8, 0.55) !important;
+    }
+
+    #sib-container .sib-form-block__button:active {
+      transform: translateY(1px);
+    }
+
+    /* ==========================================================================
+       8. BREVO MESSAGE PANELS (PINNED AT BOTTOM WHEN SHOWN) & ERRORS
+       ========================================================================== */
+    :where(.sib-form-message-panel) {
+      display: none;
+    }
+
+    :where(.sib-form-message-panel .sib-notification__icon) {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    #error-message,
+    #success-message {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: calc(100% - 28px) !important;
+      max-width: 632px !important;
+      margin: 0 !important;
+      z-index: 10002 !important;
+      border-radius: 4px !important;
+      font-family: var(--font-runethia-body) !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.78) !important;
+      animation: bottomBannerSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes bottomBannerSlideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 16px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    #error-message {
+      background-color: #f6e1dc !important;
+      border: 1.5px solid #721815 !important;
+      color: #4a0d0b !important;
+    }
+
+    #success-message {
+      background-color: #e4eedf !important;
+      border: 1.5px solid #244d2b !important;
+      color: #16331b !important;
+    }
+
+    #sib-container .entry__error {
+      font-family: var(--font-runethia-body) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      color: #6b1411 !important;
+      background-color: rgba(114, 24, 21, 0.09) !important;
+      border-left: 2.5px solid #721815 !important;
+      border-top: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
+      border-radius: 0 !important;
+      padding: 4px 8px !important;
+      margin-top: 4px !important;
+      text-align: left !important;
+    }
+
+    /* ==========================================================================
+       9. RESPONSIVE ADAPTATIONS (MOBILE / TABLET)
+       ========================================================================== */
+    @media (max-width: 640px) {
+      .sib-form {
+        padding: 16px 8px 88px 8px !important;
+      }
+
+      .scroll-cylinder {
+        height: 44px;
+      }
+
+      #sib-container {
+        width: 95% !important;
+        padding: 44px 24px 48px 24px !important;
+      }
+
+      #sib-container .sib-sms-input {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #sib-container .sib-sms-input .entry__field:first-child {
+        flex: 1 1 auto;
+        max-width: 100%;
+      }
+
+      #sib-container .sib-form-block__button {
+        width: 100%;
+        padding: 13px 20px !important;
+      }
+    }
