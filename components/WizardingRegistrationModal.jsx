@@ -1,6 +1,7 @@
   "use client";
   import { useEffect, useRef, useState } from "react";
-  import "./WizardingRegistrationModal.css";  
+  import "./WizardingRegistrationModal.css"; 
+  import { submitToBrevo } from "@/app/lib/brevo";
 
   const COUNTRY_CODES = [
   { value: "+93", label: "+93 AF" },
@@ -376,27 +377,49 @@
     return () => observer.disconnect();
   }, []);
 
-  const handleFormSubmit = () => {
-    if (!onSupabaseSync || !formRef.current) return;
-    const fd = new FormData(formRef.current);
-    const countryCode = (fd.get("SMS__COUNTRY_CODE") || "").toString().replace(/^\+/, "");
-    const rawPhone = (fd.get("SMS") || "").toString().trim();
+ const handleFormSubmit = async (e) => {  
+    e.preventDefault();
+    if (!formRef.current) return;
 
-    onSupabaseSync({
-      full_name: (fd.get("FULL_NAME") || "").toString().trim(),
-      email: (fd.get("EMAIL") || "").toString().trim().toLowerCase(),
-      phone: rawPhone ? `${countryCode}${rawPhone}` : null,
-      age: (fd.get("AGE") || "").toString().trim(),
-      current_status: fd.get("CURRENT_STATUS")?.toString() || null,
-      heard_about_us: fd.get("HEARD_ABOUT_US")?.toString() || null,
-      heard_about_us_other: (fd.get("HEARD_ABOUT_US_OTHER") || "").toString().trim() || null,
-      previous_attendance: fd.get("PREVIOUS_ATTENDANCE")?.toString() || null,
-      attended_experience: (fd.get("ATTENDED_EXPERIENCE") || "").toString().trim() || null,
-      why_interested: (fd.get("WHY_INTERESTED_IN_ATTENDANCE") || "").toString().trim(),
-      attendance_confirmation: fd.get("ATTENDANCE_CONFIRMATION")?.toString() || null,
-      updates_about_events: fd.get("UPDATES_ABOUT_EVENTS")?.toString() || null,
-      additional_comments: (fd.get("ADDITIONAL_COMMENTS_OR_QUESTIONS") || "").toString().trim() || null,
-    });
+    try {
+      const submittedData = await submitToBrevo(formRef.current);
+
+      if (errorRef.current) errorRef.current.style.display = "none";
+      if (successRef.current) successRef.current.style.display = "block";
+
+      if (onSupabaseSync) {
+        const fd = new FormData(formRef.current);
+        await onSupabaseSync({
+          full_name: (fd.get("FULL_NAME") || "").toString().trim(),
+          email: (fd.get("EMAIL") || "").toString().trim().toLowerCase(),
+          phone: submittedData.SMS || null,
+          age: (fd.get("AGE") || "").toString().trim(),
+          current_status: fd.get("CURRENT_STATUS")?.toString() || null,
+          heard_about_us: fd.get("HEARD_ABOUT_US")?.toString() || null,
+          heard_about_us_other:
+            (fd.get("HEARD_ABOUT_US_OTHER") || "").toString().trim() || null,
+          previous_attendance: fd.get("PREVIOUS_ATTENDANCE")?.toString() || null,
+          attended_experience:
+            (fd.get("ATTENDED_EXPERIENCE") || "").toString().trim() || null,
+          why_interested: (fd.get("WHY_INTERESTED_IN_ATTENDANCE") || "")
+            .toString()
+            .trim(),
+          attendance_confirmation:
+            fd.get("ATTENDANCE_CONFIRMATION")?.toString() || null,
+          updates_about_events:
+            fd.get("UPDATES_ABOUT_EVENTS")?.toString() || null,
+          additional_comments:
+            (fd.get("ADDITIONAL_COMMENTS_OR_QUESTIONS") || "").toString().trim() ||
+            null,
+        });
+      }
+
+      formRef.current.reset();
+    } catch (err) {
+      console.error("Registration submission failed:", err);
+      if (successRef.current) successRef.current.style.display = "none";
+      if (errorRef.current) errorRef.current.style.display = "block";
+    }
   };
 
   return (
@@ -952,6 +975,5 @@
           </div>
         </div>
       </div>
-    </>
-  );
+    </>);
 }
