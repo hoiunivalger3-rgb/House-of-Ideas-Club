@@ -258,7 +258,12 @@
   { value: "+260", label: "+260 ZM" },
   { value: "+263", label: "+263 ZW" },
 ];
-
+/**
+ * @param {object} props
+ * @param {boolean} [props.open]
+ * @param {(value: boolean) => void} [props.onOpenChange]
+ * @param {(payload: Record<string, any>) => void} [props.onSupabaseSync]
+ */
   export default function WizardingRegistrationModal({
   open = undefined,
   onOpenChange = undefined,
