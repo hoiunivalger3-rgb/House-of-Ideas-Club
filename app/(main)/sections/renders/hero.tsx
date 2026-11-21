@@ -7,14 +7,8 @@ import {FlipText} from "@/components/ui/FlipText";
 import {Button} from "@/components/ui/button";
 import {ArrowRight} from "lucide-react";
 import {useRouter} from "next/navigation";
-
-
-
-
-
-
-
-
+import { Cinzel } from "next/font/google";
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["600"] });
 
 export default function Hero() {
 
@@ -38,7 +32,7 @@ export default function Hero() {
                     </h2>
                 </m.div>
                 {/*op 0.1*/}
-                <m.div className="text-center mx-2 font-mono text-purple-300 text-lg md:text-xl lg:text-2xl max-w-3xl  mt-4 bg-gradient-to-b from-gray-900 to-black p-6 rounded-lg shadow-[0_0_15px_rgba(128,0,128,0.1)] border border-purple-900"
+                <m.div className="text-center mx-auto w-[calc(100%-1rem)] font-mono text-purple-300 text-lg md:text-xl lg:text-2xl max-w-3xl  mt-4 bg-gradient-to-b from-gray-900 to-black p-6 rounded-lg shadow-[0_0_15px_rgba(128,0,128,0.1)] border border-purple-900"
                     style={{boxShadow: 'inset 0 1px 3px 0 rgba(128,0,128,0.2), 0 0 15px rgba(128,0,128,0.2)',
                         backgroundImage: 'repeating-linear-gradient(0deg, rgba(64,0,64,0.15), rgba(64,0,64,0.15) 1px, transparent 1px, transparent 2px)'
                     }}
@@ -65,25 +59,39 @@ export default function Hero() {
                         <span className="text-purple-600  dark:text-purple-400">user@houseofideas:~$</span>
                     </p>
                 </m.div>
-                <div className='flex md:gap-12 gap-5   flex-col sm:flex-row justify-center items-center'>
-                    <Button  aria-label='check all workshops' className='bg-gradient-to-r  from-purple-700 to-purple-900' onClick={()=>router.push('/Workshops')} size='md' variant='cto'>
-                        <span className="mr-2 min-w-[13rem]">
-                            check out  all   Workshops
-                        </span>
-                        <ArrowRight className=" w-5 h-5  transition-transform duration-300 ease-in-out transform group-hover:translate-x-1"/>
+                <div className='flex flex-col items-center gap-12 mt-8'>
 
+    {/* Row 1: Workshops + Events side by side */}
+    <div className='flex md:gap-12 gap-5 flex-col sm:flex-row justify-center items-center'>
+        <Button aria-label='check all workshops' className='bg-gradient-to-r from-purple-700 to-purple-900' onClick={()=>router.push('/Workshops')} size='md' variant='cto'>
+            <span className="mr-2 min-w-[13rem]">
+                check out all Workshops
+            </span>
+            <ArrowRight className="w-5 h-5 transition-transform duration-300 ease-in-out transform group-hover:translate-x-1"/>
+        </Button>
 
-                    </Button>
-                    <Button aria-label='check all events' className=' bg-gradient-to-r  from-blue-700 to-blue-900' onClick={()=>{router.push('/Events')}} size='md' variant='cto'>
-                        <span className="mr-2 min-w-[13rem]">
-                            check out all Events
-                        </span>
-                        <ArrowRight className="w-5 h-5  transition-transform duration-300 ease-in-out transform group-hover:translate-x-1"/>
+        <Button aria-label='check all events' className='bg-gradient-to-r from-blue-700 to-blue-900' onClick={()=>{router.push('/Events')}} size='md' variant='cto'>
+            <span className="mr-2 min-w-[13rem]">
+                check out all Events
+            </span>
+            <ArrowRight className="w-5 h-5 transition-transform duration-300 ease-in-out transform group-hover:translate-x-1"/>
+        </Button>
+    </div>
 
-
-                    </Button>
-
-                </div>
+    {/* Row 2: Hogwarts button, lower and centred */}
+ <Button aria-label='check latest events' className='btn-hogwarts relative !rounded-2xl !px-10 !py-2.5 !justify-center' onClick={()=>{router.push('/Events')}} size='md' variant='cto'>
+    <span className="flex flex-col items-center justify-center gap-1 w-full text-center">
+        <span className="font-bold text-[0.7rem] sm:text-xs tracking-[0.12em] whitespace-nowrap">WELCOME TO HOGWARTS EVENT</span>
+        <span className="flex items-center gap-2 text-[#c9a24b] text-[0.6rem] leading-none">
+            <span className="h-px w-6 bg-[#c9a24b]" />
+            ✦
+            <span className="h-px w-6 bg-[#c9a24b]" />
+        </span>
+        <span className="text-[0.6rem] tracking-[0.25em] text-[#c9a24b]">29 NOVEMBER 2026</span>
+    </span>
+    <ArrowRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1"/>
+</Button>
+</div>
             </div>
         </div>
     )
