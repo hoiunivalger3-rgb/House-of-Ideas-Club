@@ -47,7 +47,7 @@ export default function Footer() {
                 </div>
                 <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8"/>
                 <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 sm:text-center dark:text-gray-400">©2024<span> House of ideas.</span></span>
+                    <span className="text-xs text-gray-500 sm:text-center dark:text-gray-400">©2026<span> House of ideas.</span></span>
                     <div className="flex  justify-center mt-0">
 
 
