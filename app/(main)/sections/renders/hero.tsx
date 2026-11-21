@@ -1,10 +1,12 @@
 'use client'
+import { useState } from 'react';
 
 import {m} from "framer-motion"
 import {TypewriterEffect} from "@/components/ui/TyperWriter";
 
 import {FlipText} from "@/components/ui/FlipText";
 import {Button} from "@/components/ui/button";
+import WizardingRegistrationModal from '@/components/WizardingRegistrationModal';
 import {ArrowRight} from "lucide-react";
 import {useRouter} from "next/navigation";
 import { Cinzel } from "next/font/google";
@@ -14,6 +16,7 @@ export default function Hero() {
 
     const sentence = [{text: "cat",}, {text: "welcome",}, {text: "message.txt",}];
     const router = useRouter()
+    const [registerOpen, setRegisterOpen] = useState(false);
 
     return (
         <div id='Hero'>
@@ -32,7 +35,7 @@ export default function Hero() {
                     </h2>
                 </m.div>
                 {/*op 0.1*/}
-                <m.div className="text-center mx-auto w-[calc(100%-1rem)] font-mono text-purple-300 text-lg md:text-xl lg:text-2xl max-w-3xl  mt-4 bg-gradient-to-b from-gray-900 to-black p-6 rounded-lg shadow-[0_0_15px_rgba(128,0,128,0.1)] border border-purple-900"
+                <m.div className="text-center mx-auto w-full font-mono text-purple-300 text-lg md:text-xl lg:text-2xl max-w-4xl mt-4 bg-gradient-to-b from-gray-900 to-black px-4 py-6 sm:px-6 rounded-lg shadow-[0_0_15px_rgba(128,0,128,0.1)] border border-purple-900"
                     style={{boxShadow: 'inset 0 1px 3px 0 rgba(128,0,128,0.2), 0 0 15px rgba(128,0,128,0.2)',
                         backgroundImage: 'repeating-linear-gradient(0deg, rgba(64,0,64,0.15), rgba(64,0,64,0.15) 1px, transparent 1px, transparent 2px)'
                     }}
@@ -79,7 +82,7 @@ export default function Hero() {
     </div>
 
     {/* Row 2: Hogwarts button, lower and centred */}
- <Button aria-label='check latest events' className='btn-hogwarts relative !rounded-2xl !px-10 !py-2.5 !justify-center' onClick={()=>{router.push('/Events')}} size='md' variant='cto'>
+ <Button aria-label='check latest events' className='btn-hogwarts relative !rounded-2xl !px-10 !py-2.5 !justify-center' onClick={() => setRegisterOpen(true)} size='md' variant='cto'>
     <span className="flex flex-col items-center justify-center gap-1 w-full text-center">
         <span className="font-bold text-[0.7rem] sm:text-xs tracking-[0.12em] whitespace-nowrap">WELCOME TO HOGWARTS EVENT</span>
         <span className="flex items-center gap-2 text-[#c9a24b] text-[0.6rem] leading-none">
@@ -91,6 +94,7 @@ export default function Hero() {
     </span>
     <ArrowRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1"/>
 </Button>
+    <WizardingRegistrationModal open={registerOpen} onOpenChange={setRegisterOpen} />
 </div>
             </div>
         </div>

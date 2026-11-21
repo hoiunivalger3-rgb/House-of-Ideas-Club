@@ -1,20 +1,4 @@
     @font-face {
-      font-family: 'Runethia';
-      src: local('Runethia'),
-           local('Runethia Regular'),
-           url('./Runethia.woff2') format('woff2'),
-           url('./Runethia.woff') format('woff'),
-           url('./Runethia.ttf') format('truetype'),
-           url('Runethia.ttf') format('truetype'),
-           url('fonts/Runethia.woff2') format('woff2'),
-           url('fonts/Runethia.woff') format('woff'),
-           url('fonts/Runethia.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
       font-display: block;
       font-family: Roboto;
       src: url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2"),
@@ -53,21 +37,7 @@
       --parchment-edge: #9e794c;
     }
 
-    * {
-      box-sizing: border-box;
-    }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background-color: #16100b !important;
-      background-image:
-        radial-gradient(ellipse at 50% 25%, #2c2016 0%, #140e09 65%, #0a0704 100%) !important;
-      color: var(--ink-dark);
-      font-family: var(--font-runethia-body) !important;
-      -webkit-font-smoothing: antialiased;
-    }
 
     /* Envelope Trigger Section (Move this into your desired section on the page) */
     .envelope-section {
@@ -325,7 +295,7 @@
         radial-gradient(circle at 18% 22%, rgba(166, 125, 76, 0.22) 0%, transparent 38%),
         radial-gradient(circle at 82% 68%, rgba(154, 112, 65, 0.24) 0%, transparent 42%),
         radial-gradient(circle at 28% 84%, rgba(175, 134, 82, 0.2) 0%, transparent 35%),
-        url('Gemini_Generated_Image_li92rgli92rgli92.jfif') !important;
+         url('/images/parchment.jpg') !important;
       background-size: 100% 100% !important;
       background-repeat: no-repeat !important;
       box-shadow:

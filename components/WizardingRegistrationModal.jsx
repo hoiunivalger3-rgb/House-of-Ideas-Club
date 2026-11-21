@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import "./WizardingRegistrationModal.css";
 
@@ -18,8 +19,11 @@ const COUNTRY_CODES = [
   // Add any remaining country <option> entries from wizarding_4.html here
 ];
 
-export default function WizardingRegistrationModal({ onSupabaseSync }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function WizardingRegistrationModal({ open, onOpenChange, onSupabaseSync }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+  const setIsOpen = (value) => (isControlled ? onOpenChange?.(value) : setInternalOpen(value));
   const modalRef = useRef(null);
   const formRef = useRef(null);
   const successRef = useRef(null);
@@ -148,6 +152,7 @@ export default function WizardingRegistrationModal({ onSupabaseSync }) {
 
   return (
     <>
+    {!isControlled && (
       <div className="envelope-section">
         <div className="wax-envelope-wrapper">
           <img
@@ -164,6 +169,7 @@ export default function WizardingRegistrationModal({ onSupabaseSync }) {
           />
         </div>
       </div>
+      )}
 
       <div
         id="register-modal"
