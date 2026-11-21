@@ -94,7 +94,7 @@ export default function Hero() {
     </span>
     <ArrowRight className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1"/>
 </Button>
-    <WizardingRegistrationModal open={registerOpen} onOpenChange={setRegisterOpen} />
+   <WizardingRegistrationModal open={registerOpen} onOpenChange={setRegisterOpen} />
 </div>
             </div>
         </div>

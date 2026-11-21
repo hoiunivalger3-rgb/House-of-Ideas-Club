@@ -1,8 +1,8 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import "./WizardingRegistrationModal.css";
+  "use client";
+  import { useEffect, useRef, useState } from "react";
+  import "./WizardingRegistrationModal.css";  
 
-const COUNTRY_CODES = [
+  const COUNTRY_CODES = [
   { value: "+93", label: "+93 AF" },
   { value: "+358", label: "+358 AX" },
   { value: "+355", label: "+355 AL" },
@@ -259,7 +259,11 @@ const COUNTRY_CODES = [
   { value: "+263", label: "+263 ZW" },
 ];
 
-export default function WizardingRegistrationModal({ open, onOpenChange, onSupabaseSync }) {
+  export default function WizardingRegistrationModal({
+  open = undefined,
+  onOpenChange = undefined,
+  onSupabaseSync = undefined,
+}) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : internalOpen;
