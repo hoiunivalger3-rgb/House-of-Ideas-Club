@@ -36,11 +36,14 @@ export async function insert<T>(
     table: string,
     data: Partial<T> | Partial<T>[] | null
 ): Promise<boolean> {
+    if (!data) {
+        return false;
+    }
     try {
         const supabaseClient = await createClient();
         const {error} = await supabaseClient
             .from(table)
-            .insert(data);
+            .insert(data as any);
 
         return !error;
     } catch (error) {
