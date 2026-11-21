@@ -34,6 +34,7 @@ export default function Footer() {
                                 <li className="mb-4">
                                     <a href="https://wa.me/+213796664383" className="hover:underline z-20">+213 660 54 98 73</a>
                                 </li>
+ 
                             </ul>
                         </div>
 
@@ -47,19 +48,19 @@ export default function Footer() {
 
 
                         <a href="https://www.instagram.com/club_houseofideas/"
-                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white" target="_blank" rel="noopener noreferrer">
                             <Instagram/>
                             <span className="sr-only">Instagram page</span>
                         </a>
 
                         <a href="https://www.facebook.com/profile.php?id=61552555332858&mibextid=LQQJ4d"
-                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
+                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5" target="_blank" rel="noopener noreferrer">
                             <FacebookIcon/>
                             <span className="sr-only">Instagram page</span>
                         </a>
 
                         <a href="https://www.tiktok.com/@clubhouseofideas"
-                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
+                           className="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5" target="_blank" rel="noopener noreferrer">
                             <Tiktok/>
                             <span className="sr-only">Tiktok</span>
                         </a>
