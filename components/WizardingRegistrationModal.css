@@ -791,3 +791,80 @@
         padding: 13px 20px !important;
       }
     }
+    /* Hide Brevo's own success panel (we show our own box instead) */
+#success-message {
+  visibility: hidden !important;
+}
+
+.thanks-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(12, 8, 5, 0.75);
+  backdrop-filter: blur(3px);
+  animation: thanksFade 0.3s ease;
+}
+
+.thanks-card {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  padding: 32px 28px 28px;
+  border-radius: 6px;
+  background: var(--parchment-base);
+  border: 1.5px solid #8c5a24;
+  box-shadow: inset 0 0 0 4px rgba(234, 216, 179, 0.5), 0 24px 48px rgba(0, 0, 0, 0.7);
+  color: var(--ink-dark);
+}
+
+.thanks-ornament {
+  font-family: var(--font-runethia);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--wax-crimson);
+  margin-bottom: 10px;
+}
+
+.thanks-card h3 {
+  font-family: var(--font-runethia);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.thanks-card p {
+  font-family: var(--font-runethia-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 22px;
+  color: var(--ink-medium);
+}
+
+.thanks-ok {
+  font-family: var(--font-runethia);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--parchment-light);
+  background: linear-gradient(180deg, #8a201c 0%, #721815 52%, #520f0d 100%);
+  border: 1.5px solid #3c0a08;
+  border-radius: 3px;
+  padding: 10px 40px;
+  cursor: pointer;
+}
+
+.thanks-ok:hover { filter: brightness(1.1); }
+
+@keyframes thanksFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.thanks-ok:focus-visible {
+  outline: 2px solid #e5be46;
+  outline-offset: 3px;
+}

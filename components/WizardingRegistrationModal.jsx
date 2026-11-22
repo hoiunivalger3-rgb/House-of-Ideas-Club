@@ -279,6 +279,8 @@
   const formRef = useRef(null);
   const successRef = useRef(null);
   const errorRef = useRef(null);
+  const [showThanks, setShowThanks] = useState(false);
+  const okBtnRef = useRef(null);
 
   useEffect(() => {
     const fontsId = "wizarding-google-fonts";
@@ -377,7 +379,19 @@
     return () => observer.disconnect();
   }, []);
 
- const handleFormSubmit = async (e) => {  
+   useEffect(() => {
+    if (!showThanks) return;
+    okBtnRef.current?.focus();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [showThanks]);
+
+  const handleThanksOk = () => setShowThanks(false);
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!formRef.current) return;
 
@@ -385,7 +399,6 @@
       const submittedData = await submitToBrevo(formRef.current);
 
       if (errorRef.current) errorRef.current.style.display = "none";
-      if (successRef.current) successRef.current.style.display = "block";
 
       if (onSupabaseSync) {
         const fd = new FormData(formRef.current);
@@ -415,9 +428,10 @@
       }
 
       formRef.current.reset();
+      setIsOpen(false);
+      setShowThanks(true);
     } catch (err) {
       console.error("Registration submission failed:", err);
-      if (successRef.current) successRef.current.style.display = "none";
       if (errorRef.current) errorRef.current.style.display = "block";
     }
   };
@@ -975,5 +989,26 @@
           </div>
         </div>
       </div>
-    </>);
+      {showThanks && (
+        <div
+          className="thanks-backdrop"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="thanks-title"
+          aria-describedby="thanks-text"
+        >
+          <div className="thanks-card">
+            <div className="thanks-ornament" aria-hidden="true">&#10022; &#9830; &#10022;</div>
+            <h3 id="thanks-title">Registration Confirmed</h3>
+            <p id="thanks-text">
+              You have been successfully confirmed to our event, please check your email
+            </p>
+            <button ref={okBtnRef} type="button" className="thanks-ok" onClick={handleThanksOk}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
