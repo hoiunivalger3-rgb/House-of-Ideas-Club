@@ -18,6 +18,7 @@ const departments : departmentsType[] = [
         description: [
             'Planning',
             'Recruitment',
+            'Rapport',
             'Evaluation',
 
 
