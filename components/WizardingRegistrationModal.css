@@ -868,3 +868,14 @@
   outline: 2px solid #e5be46;
   outline-offset: 3px;
 }
+.email-error {
+  margin: 6px 0 0;
+  padding: 4px 8px;
+  text-align: left;
+  font-family: var(--font-runethia-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b1411;
+  background: rgba(114, 24, 21, 0.09);
+  border-left: 2.5px solid #721815;
+}
