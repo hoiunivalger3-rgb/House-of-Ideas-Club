@@ -868,14 +868,28 @@
   outline: 2px solid #e5be46;
   outline-offset: 3px;
 }
-.email-error {
-  margin: 6px 0 0;
-  padding: 4px 8px;
+.field-invalid {
+  outline: 2px solid #721815;
+  outline-offset: 4px;
+  border-radius: 4px;
+  background: rgba(114, 24, 21, 0.07);
+  animation: field-shake 0.4s;
+}
+.field-invalid .entry__error--primary {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 6px;
   text-align: left;
-  font-family: var(--font-runethia-body);
   font-size: 13px;
   font-weight: 600;
   color: #6b1411;
-  background: rgba(114, 24, 21, 0.09);
-  border-left: 2.5px solid #721815;
+}
+@keyframes field-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .field-invalid { animation: none; }
 }

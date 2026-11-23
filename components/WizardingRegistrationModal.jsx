@@ -15,7 +15,6 @@ const DOMAIN_TYPOS = {
   "yaho.com": "yahoo.com", "yahooo.com": "yahoo.com", "yahoo.con": "yahoo.com",
   "outlok.com": "outlook.com", "outlook.con": "outlook.com",
 };
-const REQUIRED_TEXT = ["FULL_NAME", "EMAIL", "SMS", "AGE", "WHY_INTERESTED_IN_ATTENDANCE"];
 const REQUIRED_RADIO = [
   "CURRENT_STATUS",
   "HEARD_ABOUT_US",
@@ -23,6 +22,11 @@ const REQUIRED_RADIO = [
   "ATTENDANCE_CONFIRMATION",
   "UPDATES_ABOUT_EVENTS",
 ];  
+const FIELD_ORDER = [
+  "FULL_NAME", "EMAIL", "SMS", "AGE",
+  "CURRENT_STATUS", "HEARD_ABOUT_US", "PREVIOUS_ATTENDANCE",
+  "WHY_INTERESTED_IN_ATTENDANCE", "ATTENDANCE_CONFIRMATION", "UPDATES_ABOUT_EVENTS",
+];
 /**
  * @param {object} props
  * @param {boolean} [props.open]
@@ -45,8 +49,6 @@ const REQUIRED_RADIO = [
   const errorRef = useRef(null);
   const [showThanks, setShowThanks] = useState(false);
   const okBtnRef = useRef(null);
-  const [emailError, setEmailError] = useState("");
-  const [formError, setFormError] = useState("");
   const submittingRef = useRef(false);
   
   useEffect(() => {
@@ -157,62 +159,81 @@ const REQUIRED_RADIO = [
   }, [showThanks]);
 
   const handleThanksOk = () => setShowThanks(false);
+  const clearProblem = (el) => {
+  const box = el?.closest?.(".sib-form-block");
+  if (!box) return;
+  box.classList.remove("field-invalid");
+  const msg = box.querySelector(".entry__error--primary");
+  if (msg) msg.textContent = "";
+};
+
+const clearAllProblems = () => {
+  formRef.current?.querySelectorAll(".field-invalid").forEach((box) => clearProblem(box));
+};
+
+// Highlight the field, show the message under it, scroll to it, focus it
+const showProblem = (name, message) => {
+  const el = formRef.current?.querySelector(`[name="${name}"]`);
+  const box = el?.closest(".sib-form-block");
+  if (!el || !box) return;
+  box.classList.add("field-invalid");
+  const msg = box.querySelector(".entry__error--primary");
+  if (msg) msg.textContent = message;
+  box.scrollIntoView({ behavior: "smooth", block: "center" });
+  if (el.type !== "radio") setTimeout(() => el.focus({ preventScroll: true }), 350);
+};
+
+// Returns the FIRST problem on the page, or null if the form is fine
+const findFirstProblem = (data) => {
+  for (const name of FIELD_ORDER) {
+    const value = (data.get(name) || "").toString().trim();
+    if (!value) {
+      return {
+        name,
+        message: REQUIRED_RADIO.includes(name) ? "Please choose an option." : "Please fill in this field.",
+      };
+    }
+    if (name === "EMAIL" && !EMAIL_RE.test(value.toLowerCase()))
+      return { name, message: "Please enter a valid email address." };
+    if (name === "SMS" && !/^\d{6,19}$/.test(value.replace(/[\s-]/g, "")))
+      return { name, message: "Please enter a valid phone number (6 to 19 digits)." };
+    if (name === "AGE" && !/^\d{1,3}$/.test(value))
+      return { name, message: "Please enter your age as a number." };
+  }
+  return null;
+};
 
   const processSubmit = async () => {
   if (!formRef.current) return;
-        setFormError("");
-    setEmailError("");
-    const data = new FormData(formRef.current);
+  clearAllProblems();
 
-    // 1. Required fields
-    const missing = [
-      ...REQUIRED_TEXT.filter((n) => !(data.get(n) || "").toString().trim()),
-      ...REQUIRED_RADIO.filter((n) => !data.get(n)),
-    ];
-    if (missing.length > 0) {
-      setFormError("Please fill in all the required fields (marked with *).");
-      const first = formRef.current.querySelector(`[name="${missing[0]}"]`);
-      first?.closest(".sib-form-block")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (first && first.type !== "radio") first.focus();
-      return;
-    }
+  const data = new FormData(formRef.current);
+  const problem = findFirstProblem(data);
+  if (problem) {
+    showProblem(problem.name, problem.message);
+    return;
+  }
 
-    // 2. Age and phone format
-    if (!/^\d{1,3}$/.test((data.get("AGE") || "").toString().trim())) {
-      setFormError("Please enter your age as a number.");
+  const email = (data.get("EMAIL") || "").toString().trim().toLowerCase();
+  const [mailName, mailDomain] = email.split("@");
+  if (DOMAIN_TYPOS[mailDomain]) {
+    showProblem("EMAIL", `Did you mean ${mailName}@${DOMAIN_TYPOS[mailDomain]} ?`);
+    return;
+  }
+  try {
+    const res = await fetch("/api/validate-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const check = await res.json();
+    if (!check.valid) {
+      showProblem("EMAIL", check.reason);
       return;
     }
-    const phoneDigits = (data.get("SMS") || "").toString().replace(/[\s-]/g, "");
-    if (!/^\d{6,19}$/.test(phoneDigits)) {
-      setFormError("Please enter a valid phone number (6 to 19 digits).");
-      return;
-    }
-
-    // 3. Email format, typos, and domain check
-    const email = (data.get("EMAIL") || "").toString().trim().toLowerCase();
-    if (!EMAIL_RE.test(email)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-    const [mailName, mailDomain] = email.split("@");
-    if (DOMAIN_TYPOS[mailDomain]) {
-      setEmailError(`Did you mean ${mailName}@${DOMAIN_TYPOS[mailDomain]} ?`);
-      return;
-    }
-    try {
-      const res = await fetch("/api/validate-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const check = await res.json();
-      if (!check.valid) {
-        setEmailError(check.reason);
-        return;
-      }
-    } catch {
-      // if the check can't run, let the registration continue
-    }
+  } catch {
+    // if the check can't run, let the registration continue
+  }
     try {
       const submittedData = await submitToBrevo(formRef.current);
 
@@ -355,7 +376,7 @@ const REQUIRED_RADIO = [
             >
               <div className="sib-form-message-panel__text sib-form-message-panel__text--center">
                 <span className="sib-form-message-panel__inner-text">
-                  Your have been successfully confirmed to our event, please check your email
+                  Your have been
                 </span>
               </div>
             </div>
@@ -371,6 +392,9 @@ const REQUIRED_RADIO = [
                 <form
                   id="sib-form"
                   ref={formRef}
+                  noValidate
+                  onInput={(e) => clearProblem(e.target)}
+                  onChange={(e) => clearProblem(e.target)}
                   method="POST"
                   action="https://565bfdea.sibforms.com/serve/MUIFAAB36kzCUiK0yaR9DhyrF_tIatXJ6fa5LcNHW9qmdhxPu_mSgDanQ2URRSOSfr9ALJsjqKT7FgWJUPdqQFfwawU6GoBLC5AIaeP-zmOn3QLc2ytRzDefO6TJ7Lx8Jg0lYjwAqOE3spkmIvx1E5NYPfWAB-9T2cpCAbaC52atks4Ffl6jfAjuxusr3rw0nl1cW2b244Vohxnh-w=="
                   data-type="subscription"
@@ -378,7 +402,7 @@ const REQUIRED_RADIO = [
                 >
                   <div style={{ padding: "4px 0" }}>
                     <div className="sib-form-block wizarding-title">
-                      <p>Registeration</p>
+                      <p>Registration</p>
                     </div>
                   </div>
 
@@ -440,12 +464,10 @@ const REQUIRED_RADIO = [
                             placeholder="You Email"
                             data-required="true"
                             required
-                            onChange={() => emailError && setEmailError("")}
                             />
                           </div>
                         </div>
                         <label className="entry__error entry__error--primary" />
-                        {emailError && <p className="email-error" role="alert">{emailError}</p>}
                       </div>
                     </div>
                   </div>
@@ -792,8 +814,6 @@ const REQUIRED_RADIO = [
                   <div className="ink-divider" aria-hidden="true">
                   <span>&#10022; &#9830; &#10022;</span>
                   </div>
-
-                  {formError && <p className="email-error" role="alert">{formError}</p>}
 
                   <div style={{ padding: "8px 0" }}>
                     <div className="sib-form-block submit-button-wrapper">
